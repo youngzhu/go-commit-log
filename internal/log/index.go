@@ -41,7 +41,7 @@ func newIndex(f *os.File, c Config) (*index, error) {
 
 	idx.mmap, err = gommap.Map(
 		idx.file.Fd(),
-		gommap.PROT_READ|gommap.PROT_WRITE,
+		gommap.PROT_WRITE,
 		gommap.MAP_SHARED,
 	)
 	if err != nil {
@@ -104,6 +104,7 @@ func (i *index) Close() error {
 
 	// 无法执行，报错：
 	// The requested operation cannot be performed on a file with a user-mapped section open.
+	// 网上很多人说重启就好了。但我重启电脑之后还是不行
 	//if err := i.file.Truncate(int64(i.size)); err != nil {
 	//	return err
 	//}
