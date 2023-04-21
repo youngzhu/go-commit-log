@@ -93,7 +93,13 @@ func (i *index) Name() string {
 // to the persisted file and that the persisted file has flushed
 // its contents to stable storage. Then it truncates the persisted
 // file to the amount of data that's actually in it and closes the file
-func (i *index) Close() error {
+func (i *index) Close() (err error) {
+	defer func() {
+    if cerr := i.file.Close(); cerr != nil {
+        err = cerr // 如果出现错误，则将其赋值给函数返回值
+    }
+}()
+	
 	if err := i.mmap.Sync(gommap.MS_SYNC); err != nil {
 		return err
 	}
@@ -112,5 +118,5 @@ func (i *index) Close() error {
 		return err
 	}
 
-	return i.file.Close()
+	return 
 }
